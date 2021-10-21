@@ -31,15 +31,48 @@ class Contenedor {
     }
   }
 
+  //work in progress
+  async update(title,price,url,id) {
+    const objs = await this.getAll();
+
+//Find index of specific object using findIndex method.    
+const objIndex = objs.findIndex((obj => obj.id == id));
+
+//Log object to Console.
+console.log("Before update: ", objs[objIndex])
+
+//Update object's propertys.
+//Propierties {title, price, url}
+objs[objIndex].title = title;
+objs[objIndex].price = price;
+objs[objIndex].url = url;
+
+//Log object to console again.
+console.log("After update: ", objs[objIndex])
+
+    try {
+      await fs.promises.writeFile(this.ruta, JSON.stringify(objs))
+      return id;
+    } catch (err) {
+      throw new Error(`Error al guardar: ${error}`)
+    }
+  }
+  //work in progress down
+
   async deleteAll() {
     console.log("borrando todo...");
     await fs.unlink(this.ruta, (err => {
-      if (err) console.log(err);
+      if (err) {
+        console.log("no se pudo borrar el archivo");
+        return "se borro el archivo";
+      }
       else {
         console.log("\n Deleted file: " + this.ruta);
-      }
+        return "se borro el archivo";
+      } 
     }))
   }
+
   async getById(id) {
     const objs = await this.getAll()
     const buscado = objs.find(o => o.id === id)
