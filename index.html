@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,15 +10,43 @@
     <title>Document</title>
 </head>
 <header>
-    
+
 </header>
-<body>
+
+<body style="background-color: rgb(149, 225, 255);">
     <h1 class="class1">
-        <a class="class1" href=http://localhost:8080/productos>productos</a>
+        <a class="class1" href=http://localhost:8080/productos>Ver todos los productos</a>
         <br>
-        <a class="class1" href=http://localhost:8080/productoRandom>productoRandom</a>
         <br>
-        <a class="class1" href=http://localhost:8080/add>add</a>
+        <a class="class1" href=http://localhost:8080/productoRandom>Ver un productoRandom</a>
+        <br>
     </h1>
+
+<tr>
+    <caption>Ver producto por id:</caption>
+    <th>
+        <a class="class1" href=http://localhost:8080/productos/1>id 1</a>
+    </th>
+    <th>
+        <a class="class1" href=http://localhost:8080/productos/2>id 2</a>
+    </th>
+    <th>
+        <a class="class1" href=http://localhost:8080/productos/3>id 3</a>
+    </th>
+    <th>
+        <a class="class1" href=http://localhost:8080/productos/4>id 4</a>
+    </th>
+</tr>
+    
+
+    <form method="post" action="http://localhost:8080/add/" class="inline">
+        <input type="hidden" name="extra_submit_param" value="extra_submit_value">
+        <button type="submit" name="submit_param" value="submit_value" class="link-button">
+            agregar un nuevo objeto
+        </button>
+    </form>
+
+
 </body>
+
 </html>
