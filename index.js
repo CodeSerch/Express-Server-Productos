@@ -3,24 +3,26 @@ const express = require('express');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const exphbs  = require('express-handlebars');
 const prueba1 = require('./programa');
 const path = require('path');
 const productos = new prueba1.Contenedor('./productos.txt')
 const app = express();
 
 //MySQL
-const connection = mysql.createConnection({
+/*const connection = mysql.createConnection({
   host: 'localhost',
   user:'root',
   password:'root',
   database:'node20_mysql'
-})
+})*/
 
 // Check connect
-connection.connect(error => {
+/*connection.connect(error => {
   if(error) throw error;
   console.log('Database server running');
 })
+*/
 //definiendo objeto
 const objeto1 = {title:"producto1" ,price:2, url:"ejemplo.png"};
 const update1 = {title:"producto2" ,price:350, url:"ejemplo2.png"};
@@ -34,12 +36,26 @@ const url="https://api.publicapis.org/entries";
 const PORT = 8080;
 
 //Middlewares
+//especificamos el subdirectorio donde se encuentran las páginas estáticas
+app.use(express.static(__dirname + '/public'));
 
-app.use(bodyParser.json());
+//extended: false significa que parsea solo string (no archivos de imagenes por ejemplo)
+app.use(bodyParser.urlencoded({ extended: false }));
 
-app.get('/', function(req, res) {
-  res.sendFile(path.join(__dirname, '/index.html'));
+//handlebars
+app.engine('handlebars', exphbs());
+app.set('view engine', 'handlebars');
+
+app.get('/', function (req, res) {
+    res.render('home');
 });
+
+/*app.set('view engine', 'pug');
+
+app.get('/', function (req, res) {
+  res.render('index', { title: 'Hey', message: 'Hello there!'});
+});*/
+
 
 //Routes
 /*app.get('/', function(req, res) {
@@ -49,7 +65,7 @@ app.get('/', function(req, res) {
 app.get("/productos", async (req, res) => {
   const prods = await productos.getAll();
   console.log(prods);
-  res.send(prods)
+  res.render('view', {layout: 'main', title : JSON.stringify(prods) });
 })
 
 app.get("/productos/:id", async (req, res) => {
@@ -71,6 +87,13 @@ app.post('/add', async function (req, res) {
   const prods = await productos.save(objeto1);
   console.log(prods);
   res.send("se añadio un objeto con id " + prods)
+});
+
+app.post('/addForm', async function (req, res) {
+  const objetoGuardar = {title:req.body.title ,price:req.body.price, url:req.body.imgUrl};
+  const prods = await productos.save(objetoGuardar);
+  console.log(prods);
+  res.redirect('/productos')
 });
 
 app.put('/update/:id', async (req, res) =>{
