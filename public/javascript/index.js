@@ -17,15 +17,25 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 
 io.on('connection', (socket) => {
-  console.log('new connection', socket.id);
-  socket.on('chat message', (msg) => {
-    console.log('message: ' + msg);
-  })
+  console.log('new connection1', socket.id);
+
   socket.on('chat message', (msg) => {
     io.emit('chat message', msg);
     console.log('message: ' + msg);
-  });
+  })
+  
+  socket.on('send product', (product) => {
+    console.log('message: ' + product);
+    console.log("index.js")
+    io.emit('send product', product);
+  })
 });
+
+/*socket.on("lista", function async () {
+  const prods = productos.getAll();
+  render(prods);
+});*/
+
 
 
 /*io.on('connection', (socket) => {
@@ -96,6 +106,10 @@ app.set('view engine', 'handlebars');
 
 app.get('/', function (req, res) {
   res.render('home');
+});
+
+app.get('/envivo', function (req, res) {
+  res.render('enVivo');
 });
 
 app.get("/productos", async (req, res) => {
