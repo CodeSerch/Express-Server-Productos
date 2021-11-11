@@ -10,11 +10,24 @@ const productos = new prueba1.Contenedor('./productos.txt')
 const app = express();
 const cors = require('cors');
 
+
+const messages = [
+  { author: "Juan", text: "¡Hola! ¿Que tal?" },
+  { author: "Pedro", text: "¡Muy bien! ¿Y vos?" },
+  { author: "Ana", text: "¡Genial!" }
+];
+
+
 //socket io 
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
+
+async function prods() {
+  const prods = await productos.getAll();
+  return prods;
+} 
 
 io.on('connection', (socket) => {
   console.log('new connection1', socket.id);
@@ -23,11 +36,12 @@ io.on('connection', (socket) => {
     io.emit('chat message', msg);
     console.log('message: ' + msg);
   })
+
   
   socket.on('send product', (product) => {
     console.log('message: ' + product);
-    console.log("index.js")
-    io.emit('send product', product);
+    console.log("dentro de index.js" + prods())
+    io.emit('send product', prods());
   })
 });
 
@@ -55,12 +69,6 @@ io.on('connection', (socket) => {
     io.emit('chat message', msg);
   });
 });*/
-
-const messages = [
-  { author: "Juan", text: "¡Hola! ¿Que tal?" },
-  { author: "Pedro", text: "¡Muy bien! ¿Y vos?" },
-  { author: "Ana", text: "¡Genial!" }
-];
 
 //MySQL
 /*const connection = mysql.createConnection({
@@ -105,10 +113,10 @@ app.set('view engine', 'handlebars');
 });*/
 
 app.get('/', function (req, res) {
-  res.render('home');
+  res.render('home', {navbar : 'navbar' });
 });
 
-app.get('/envivo', function (req, res) {
+app.get('/productosD', function (req, res) {
   res.render('enVivo');
 });
 

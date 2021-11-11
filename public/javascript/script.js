@@ -1,0 +1,2 @@
+
+Handlebars.registerPartial('navbar', '{{navbar}}');
