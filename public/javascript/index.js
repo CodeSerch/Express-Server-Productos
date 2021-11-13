@@ -34,9 +34,8 @@ io.on('connection', (socket) => {
 
 
   socket.on('send product', async (product) => {
+    console.log("producto recibido: " + product)
     const prods = await productos.getAll();
-    console.log('message: ' + product);
-    console.log("dentro de index.js" + JSON.stringify(prods))
     io.sockets.emit('send product', prods);
   })
 });
@@ -157,10 +156,13 @@ app.post('/addForm', async function (req, res) {
     const objetoGuardar = { title: req.body.title, price: req.body.price, url: req.body.imgUrl };
     const prods = await productos.save(objetoGuardar);
     console.log(prods);
-  res.redirect('/productos')
+    const producto1 = "refresh desde index.js"
+    io.emit('refresh product', prods);
+    res.redirect('/')
+  //res.redirect('/productos')
   }
   catch (error) {
-    console.log("error, no se pudo guardar")
+    console.log("error, no se pudo guardar, " + error)
   res.redirect('/')
   }
 });
