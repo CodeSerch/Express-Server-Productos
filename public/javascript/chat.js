@@ -1,13 +1,20 @@
-var socket = io();
 
-var messages = document.getElementById('messages');
-var form = document.getElementById('form');
-var input = document.getElementById('input');
+let email = prompt("ingresa tu email:");
+let socket = io();
+
+let today = new Date();
+let date = today.getFullYear() + '-' + today.getDate() + '-' + (today.getMonth() + 1);
+let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+let dateTime = date + ' ' + time;
+
+let messages = document.getElementById('messages');
+let form = document.getElementById('form');
+let input = document.getElementById('input');
 
 form.addEventListener('submit', function (e) {
   e.preventDefault();
   if (input.value) {
-    socket.emit('chat message', input.value);
+    socket.emit('chat message', dateTime + " " + email + ": " + input.value);
     input.value = '';
   }
 });
