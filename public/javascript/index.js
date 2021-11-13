@@ -24,11 +24,6 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 
-async function prods() {
-  const prods = await productos.getAll();
-  return prods;
-} 
-
 io.on('connection', (socket) => {
   console.log('new connection1', socket.id);
 
@@ -37,11 +32,12 @@ io.on('connection', (socket) => {
     console.log('message: ' + msg);
   })
 
-  
-  socket.on('send product', (product) => {
+
+  socket.on('send product', async (product) => {
+    const prods = await productos.getAll();
     console.log('message: ' + product);
-    console.log("dentro de index.js" + prods())
-    io.emit('send product', prods());
+    console.log("dentro de index.js" + JSON.stringify(prods))
+    io.sockets.emit('send product', prods);
   })
 });
 
@@ -100,6 +96,10 @@ const PORT = 8080;
 //Middlewares
 //especificamos el subdirectorio donde se encuentran las páginas estáticas
 app.use(express.static('public'));
+app.use(express.json());
+app.use(express.urlencoded({
+  extended: true
+}))
 app.use(cors())
 
 //handlebars
@@ -113,7 +113,7 @@ app.set('view engine', 'handlebars');
 });*/
 
 app.get('/', function (req, res) {
-  res.render('home', {navbar : 'navbar' });
+  res.render('home', { navbar: 'navbar' });
 });
 
 app.get('/productosD', function (req, res) {
@@ -152,10 +152,17 @@ app.post('/add', async function (req, res) {
 });
 
 app.post('/addForm', async function (req, res) {
-  const objetoGuardar = { title: req.body.title, price: req.body.price, url: req.body.imgUrl };
-  const prods = await productos.save(objetoGuardar);
-  console.log(prods);
+  console.log(req.body.title)
+  try {
+    const objetoGuardar = { title: req.body.title, price: req.body.price, url: req.body.imgUrl };
+    const prods = await productos.save(objetoGuardar);
+    console.log(prods);
   res.redirect('/productos')
+  }
+  catch (error) {
+    console.log("error, no se pudo guardar")
+  res.redirect('/')
+  }
 });
 
 app.put('/update/:id', async (req, res) => {

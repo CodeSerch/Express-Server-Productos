@@ -14,7 +14,7 @@ btn.addEventListener('click', function (e) {
 
 socket.on('send product', function (product) {
   console.log("desde vivo.js:" + JSON.stringify(product));
-  lista.textContent = product;
+  lista.textContent = JSON.stringify(product);
 });
 
 
