@@ -5,10 +5,13 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const exphbs = require('express-handlebars');
 const prueba1 = require('./programa');
+const chatJs = require('./chatTxt');
+const chatStorage = new chatJs.ChatTxt('./chatTxt.txt')
 const path = require('path');
 const productos = new prueba1.Contenedor('./productos.txt')
 const app = express();
 const cors = require('cors');
+const fs = require("fs");
 
 
 const messages = [
@@ -25,13 +28,21 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 
 io.on('connection', (socket) => {
-  console.log('new connection1', socket.id);
+  console.log('new connection', socket.id);
 
-  socket.on('chat message', (msg) => {
-    io.emit('chat message', msg);
-    console.log('message: ' + msg);
+
+  socket.on('chat init', async (mensaje) => {
+    const chatInit = await chatStorage.getAll();
+    io.emit('chat init', chatInit);
+    console.log("este es el mensaje de " + mensaje)
   })
 
+  socket.on('chat message', async (msg) => {
+    io.emit('chat message', msg);
+    console.log('message: ' + msg);
+    const ChatPromise = await chatStorage.save(msg);
+    console.log(ChatPromise);
+  })
 
   socket.on('send product', async (product) => {
     console.log("producto recibido: " + product)
@@ -159,11 +170,11 @@ app.post('/addForm', async function (req, res) {
     const producto1 = "refresh desde index.js"
     io.emit('refresh product', prods);
     res.redirect('/')
-  //res.redirect('/productos')
+    //res.redirect('/productos')
   }
   catch (error) {
     console.log("error, no se pudo guardar, " + error)
-  res.redirect('/')
+    res.redirect('/')
   }
 });
 
