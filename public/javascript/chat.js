@@ -2,11 +2,6 @@
 let email = prompt("ingresa tu email:");
 let socket = io();
 
-let today = new Date();
-let date = today.getFullYear() + '-' + today.getDate() + '-' + (today.getMonth() + 1);
-let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-let dateTime = date + ' ' + time;
-
 let messages = document.getElementById('messages');
 let form = document.getElementById('form');
 let input = document.getElementById('input');
@@ -14,6 +9,11 @@ let input = document.getElementById('input');
 socket.emit("chat init", "chat init")
 
 form.addEventListener('submit', function (e) {
+  let today = new Date();
+  let date = today.getFullYear() + '-' + today.getDate() + '-' + (today.getMonth() + 1);
+  let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  let dateTime = date + ' ' + time;
+
   e.preventDefault();
   if (input.value) {
     socket.emit('chat message', dateTime + " " + email + ": " + input.value);
@@ -31,14 +31,14 @@ socket.on('chat message', function (msg) {
 
 socket.on('chat init', function (chatStorage) {
   let item = document.createElement('li');
-  if (chatStorage.length == 0){
+  if (chatStorage.length == 0) {
     item.textContent = "historial: vacio";
-  } else{
+  } else {
     item.textContent = "historial:";
   }
   messages.appendChild(item);
 
-    
+
   console.log("chat storage length: " + chatStorage.length);
   console.log(chatStorage);
   console.log("entrando al ciclo for");

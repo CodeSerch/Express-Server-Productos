@@ -41,7 +41,7 @@ io.on('connection', (socket) => {
     io.emit('chat message', msg);
     console.log('message: ' + msg);
     const ChatPromise = await chatStorage.save(msg);
-    console.log(ChatPromise);
+    console.log("chat promise: " + ChatPromise);
   })
 
   socket.on('send product', async (product) => {
